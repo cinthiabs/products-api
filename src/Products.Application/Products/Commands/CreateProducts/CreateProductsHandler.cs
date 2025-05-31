@@ -1,5 +1,12 @@
-﻿namespace Products.Application.Products.Commands.CreateProducts;
+﻿using Ardalis.Result;
+using MediatR;
 
-public class CreateProductsHandler
+namespace Products.Application.Products.Commands.CreateProducts;
+
+public class CreateProductsHandler : IRequestHandler<CreateProductsCommand, Result>
 {
+    public Task<Result> Handle(CreateProductsCommand request, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
 }
