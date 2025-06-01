@@ -3,6 +3,4 @@ using MediatR;
 
 namespace Products.Application.Products.Queries.GetProducts;
 
-public class GetProductsQuery: IRequest<Result<GetProductsQuery>>
-{
-}
+public class GetProductsQuery: IRequest<Result<GetProductsQuery>>;
