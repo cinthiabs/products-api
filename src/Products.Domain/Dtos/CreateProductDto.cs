@@ -1,6 +1,6 @@
 ﻿namespace Products.Domain.Dtos;
 
-public class CreateProductsDto
+public class CreateProductDto
 {
     public string Name { get; init; } = default!;
     public string Description { get; init; } = default!;

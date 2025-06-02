@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Products.API.Extensions;
 using Products.Application.Extensions;
 using Serilog;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddMediatRApi();
 builder.Services.AddSwaggerUi();
 builder.Services.AddSerilog();
+
+builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly, includeInternalTypes: true);
 
 builder.Services.AddApiVersioning(config =>
 {
