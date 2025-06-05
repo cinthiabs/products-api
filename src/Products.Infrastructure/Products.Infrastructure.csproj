@@ -11,4 +11,7 @@
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.5" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.5" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Products.Domain\Products.Domain.csproj" />
+  </ItemGroup>
 </Project>

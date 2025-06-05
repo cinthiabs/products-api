@@ -1,16 +1,16 @@
 ﻿namespace Products.Domain.Dtos;
 
-public class ProductDto
+public class ProductsDto
 {
     public int ProductId { get; init; }
     public string Name { get; init; } = default!;
     public string Description { get; init; } = default!;
     public decimal Price { get; init; }
     public DateTime CreatedAt { get; init; }
-    public IEnumerable<ProductItemDto> Items { get; init; } = default!;
+    public IEnumerable<ProductsItemDto> Items { get; init; } = default!;
 }
 
-public class ProductItemDto
+public class ProductsItemDto
 {
     public int ItemId { get; init; }
     public int ProductId { get; init; }

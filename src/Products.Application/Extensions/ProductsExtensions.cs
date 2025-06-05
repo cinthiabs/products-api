@@ -5,7 +5,7 @@ namespace Products.Application.Extensions;
 
 public static class ProductsExtensions
 {
-    public static GetProductsViewModel ToGetProductsViewModel(ProductDto productsDto)
+    public static GetProductsViewModel ToGetProductsViewModel(ProductsDto productsDto)
     {
         return new GetProductsViewModel
         {
