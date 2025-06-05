@@ -24,7 +24,6 @@ public class ProductValidator : AbstractValidator<CreateProductsCommand>
 
                items.RuleFor(i => i.Quantity)
                     .GreaterThanOrEqualTo(0).WithMessage("The value can't be negative");
-
            });
     }
 }

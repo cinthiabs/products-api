@@ -16,7 +16,7 @@ public abstract class ApiController : ControllerBase
         {
             ResultStatus.Ok => Ok(result.Value),
             ResultStatus.NotFound => NotFound(result.Errors),
-            ResultStatus.Invalid => BadRequest(result.Errors),
+            ResultStatus.Invalid => BadRequest(result.ValidationErrors),
             ResultStatus.Unauthorized => Unauthorized(result.Errors),
             ResultStatus.Conflict => Conflict(result.Errors),
             ResultStatus.Forbidden => Forbid(),

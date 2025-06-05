@@ -15,6 +15,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddMediatRApi();
 builder.Services.AddSwaggerUi();
 builder.Services.AddSerilog();
+builder.Services.AddValidators();
 
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly, includeInternalTypes: true);
 
