@@ -4,6 +4,7 @@ using Products.API.Extensions;
 using Products.Application.Extensions;
 using Serilog;
 using FluentValidation;
+using Products.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,7 @@ builder.Services.AddMediatRApi();
 builder.Services.AddSwaggerUi();
 builder.Services.AddSerilog();
 builder.Services.AddValidators();
+builder.Services.AddInfrastructure();
 
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly, includeInternalTypes: true);
 

@@ -1,5 +1,11 @@
 namespace Products.Infrastructure.Queries;
 
-public class ProductItensSqlQuery
+internal static class ProductItensSqlQuery
 {
+    internal const string QueryInsertProductItens = @"
+       INSERT INTO Item (ProductId, Quantity, BatchNumber)
+       VALUES (@ProductId, @Quantity, @BatchNumber)
+        
+       SELECT SCOPE_IDENTITY() AS ItemId;
+    ";
 }

@@ -4,6 +4,6 @@ namespace Products.Domain.Interfaces.Repositories;
 
 public interface IProductsRepository
 {
-    public Task<Product> GetProducts();
-    public Task CreateProducts(CreateProductDto createProductsDto);
+    public Task<IEnumerable<Product>> GetProductsAsync(CancellationToken cancellationToken);
+    public Task<Product> CreateProductsAsync(CreateProductDto createProductsDto, CancellationToken cancellationToken);
 }
