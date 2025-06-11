@@ -5,13 +5,13 @@ namespace Products.Infrastructure.Base;
 
 public class UnitOfWork(DbContext dbContext) : IUnitOfWork, IDisposable
 {
-    public void BeginTransation()
+    public void BeginTransaction()
     {
         dbContext.Connection.Open();
         dbContext.Transaction = dbContext.Connection.BeginTransaction(System.Data.IsolationLevel.ReadCommitted);
     }
 
-    public async Task BeginTransationAsync(CancellationToken cancellationToken)
+    public async Task BeginTransactionAsync(CancellationToken cancellationToken)
     {
         if(dbContext.Connection.State != System.Data.ConnectionState.Open)
             await dbContext.Connection.OpenAsync(cancellationToken);

@@ -16,26 +16,33 @@ public class ProductsRepository(DbContext dbContext) : IProductsRepository
 
     public async Task<List<ProductItem>> CreateItemsAsync(IEnumerable<CreateProductItemDto> itemsDto, int productId, CancellationToken cancellationToken)
     {
-        if (cancellationToken.IsCancellationRequested)
-            return new List<ProductItem>();
-
-        var table = itemsDto.Select(item => new Table_Item
+        try
         {
-            ProductId = productId,
-            Quantity = item.Quantity,
-            BatchNumber = item.BatchNumber
-        }).ToList();
+            if (cancellationToken.IsCancellationRequested)
+                return new List<ProductItem>();
 
-        var insertedItems = await dbContext.Transaction.BulkInsertAsync(table, tableName: ProductItensSqlQuery.TableNameItem);
+            var table = itemsDto.Select(item => new Table_Item
+            {
+                ProductId = productId,
+                Quantity = item.Quantity,
+                BatchNumber = item.BatchNumber
+            }).ToList();
 
-        var result = insertedItems.Select(item => new ProductItem
+            var insertedItems = await dbContext.Transaction.BulkInsertAsync(table, tableName: ProductItensSqlQuery.TableNameItem);
+
+            var result = insertedItems.Select(item => new ProductItem
+            {
+                ProductId = item.ProductId,
+                Quantity = item.Quantity,
+                BatchNumber = item.BatchNumber
+            }).ToList();
+
+            return result;
+        }
+        catch (Exception ex) 
         {
-            ProductId = item.ProductId,
-            Quantity = item.Quantity,
-            BatchNumber = item.BatchNumber
-        }).ToList();
-
-        return result;
+            throw;
+        }
     }
 
     public async Task<Product> CreateProductsAsync(CreateProductDto createProductsDto, CancellationToken cancellationToken)

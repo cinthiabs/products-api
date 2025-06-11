@@ -3,10 +3,11 @@ using FluentValidation;
 using MediatR;
 using Products.Application.Extensions;
 using Products.Domain.Interfaces.Repositories;
+using Products.Domain.Interfaces.Services;
 
 namespace Products.Application.Products.Commands.CreateProducts;
 
-public class CreateProductsHandler(IValidator<CreateProductsCommand> validator, IProductsRepository productsRepository) : IRequestHandler<CreateProductsCommand, Result>
+public class CreateProductsHandler(IValidator<CreateProductsCommand> validator, IProductsService productsService) : IRequestHandler<CreateProductsCommand, Result>
 {
     public async Task<Result> Handle(CreateProductsCommand command, CancellationToken cancellationToken)
     {
@@ -18,11 +19,9 @@ public class CreateProductsHandler(IValidator<CreateProductsCommand> validator, 
 
         var createProductDto = ProductsExtensions.ToCreateProductsDto(command);
         
-        var createProduct = await productsRepository.CreateProductsAsync(createProductDto, cancellationToken);
-        if(createProduct is null)
-        {
+        var createProduct = await productsService.CreateProductsAsync(createProductDto, cancellationToken);
+        if(!createProduct.IsSuccess)
             return Result.Error();
-        }
 
         return Result.Success();
     }
