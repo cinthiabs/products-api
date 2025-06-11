@@ -6,4 +6,5 @@ public interface IProductsRepository
 {
     public Task<IEnumerable<Product>> GetProductsAsync(CancellationToken cancellationToken);
     public Task<Product> CreateProductsAsync(CreateProductDto createProductsDto, CancellationToken cancellationToken);
+    public Task<List<ProductItem>> CreateItemsAsync(IEnumerable<CreateProductItemDto> itemsDto, int productId, CancellationToken cancellationToken);
 }

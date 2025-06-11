@@ -10,6 +10,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.5" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.5" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.5" />
+    <PackageReference Include="SqlBulkHelpers" Version="2.4.5" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Products.Domain\Products.Domain.csproj" />

@@ -10,6 +10,7 @@ public class CreateProductDto
 
 public class CreateProductItemDto
 {
+    public int ProductId { get; init; }
     public int Quantity { get; init; }
     public string BatchNumber { get; init; } = default!;
 }

@@ -4,6 +4,8 @@ using Products.Domain.Entities;
 using Products.Domain.Interfaces.Repositories;
 using Products.Infrastructure.Base;
 using Products.Infrastructure.Queries;
+using Products.Infrastructure.Scripts.Tables;
+using SqlBulkHelpers;
 using System.Data;
 
 namespace Products.Infrastructure.Repositories;
@@ -11,6 +13,31 @@ namespace Products.Infrastructure.Repositories;
 public class ProductsRepository(DbContext dbContext) : IProductsRepository
 {
     private readonly DbContext dbContext = dbContext;
+
+    public async Task<List<ProductItem>> CreateItemsAsync(IEnumerable<CreateProductItemDto> itemsDto, int productId, CancellationToken cancellationToken)
+    {
+        if (cancellationToken.IsCancellationRequested)
+            return new List<ProductItem>();
+
+        var table = itemsDto.Select(item => new Table_Item
+        {
+            ProductId = productId,
+            Quantity = item.Quantity,
+            BatchNumber = item.BatchNumber
+        }).ToList();
+
+        var insertedItems = await dbContext.Transaction.BulkInsertAsync(table, tableName: ProductItensSqlQuery.TableNameItem);
+
+        var result = insertedItems.Select(item => new ProductItem
+        {
+            ProductId = item.ProductId,
+            Quantity = item.Quantity,
+            BatchNumber = item.BatchNumber
+        }).ToList();
+
+        return result;
+    }
+
     public async Task<Product> CreateProductsAsync(CreateProductDto createProductsDto, CancellationToken cancellationToken)
     {
         var parameters = new DynamicParameters();
