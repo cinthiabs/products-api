@@ -1,5 +1,9 @@
 ﻿namespace Products.Application.Products.Queries.GetProducts;
 
+
+public record struct GetAllProductsViewModel(
+    IEnumerable<GetProductsViewModel> Products
+);
 public record struct GetProductsViewModel(
     int ProductId,
     string Name,

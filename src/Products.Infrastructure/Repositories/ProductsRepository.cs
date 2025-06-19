@@ -1,12 +1,9 @@
 using Dapper;
-using Microsoft.Data.SqlClient;
 using Products.Domain.Dtos;
 using Products.Domain.Entities;
 using Products.Domain.Interfaces.Repositories;
 using Products.Infrastructure.Base;
 using Products.Infrastructure.Queries;
-using Products.Infrastructure.Scripts.Tables;
-using SqlBulkHelpers;
 using System.Data;
 
 namespace Products.Infrastructure.Repositories;
@@ -17,47 +14,35 @@ public class ProductsRepository(DbContext dbContext) : IProductsRepository
 
     public async Task<List<ProductItem>> CreateItemsAsync(IEnumerable<CreateProductItemDto> itemsDto, int productId, CancellationToken cancellationToken)
     {
-        try
-        {
-            if (cancellationToken.IsCancellationRequested)
-                return new List<ProductItem>();
-
             var result = new List<ProductItem>();
 
             if (cancellationToken.IsCancellationRequested)
                 return result;
 
-            var connection = (SqlConnection)dbContext.Connection;
-            var transaction = (SqlTransaction)dbContext.Transaction;
-
-            const string insertSql = @"
-        INSERT INTO ProductItem (ProductId, Quantity, BatchNumber)
-        VALUES (@ProductId, @Quantity, @BatchNumber);
-    ";
-
             foreach (var item in itemsDto)
             {
-                using var command = new SqlCommand(insertSql, connection, transaction);
-                command.Parameters.AddWithValue("@ProductId", productId);
-                command.Parameters.AddWithValue("@Quantity", item.Quantity);
-                command.Parameters.AddWithValue("@BatchNumber", item.BatchNumber ?? (object)DBNull.Value);
+                var parameters = new DynamicParameters();
+                parameters.Add("@ProductId", productId, DbType.Int64);
+                parameters.Add("@Quantity", item.Quantity, DbType.Int64);
+                parameters.Add("@BatchNumber", item.BatchNumber, DbType.String);
 
-                await command.ExecuteNonQueryAsync(cancellationToken);
+              var productItem =  await dbContext.Connection.ExecuteScalarAsync<int>(
+              new CommandDefinition(
+                  ProductItemsSqlQuery.QueryInsertProductItems,
+                  parameters,
+                  dbContext.Transaction,
+                  cancellationToken: cancellationToken));
 
                 result.Add(new ProductItem
                 {
+                    ItemId = productItem,
                     ProductId = productId,
                     Quantity = item.Quantity,
                     BatchNumber = item.BatchNumber
                 });
             }
-
-            return result;
-        }
-        catch (Exception ex) 
-        {
-            throw;
-        }
+       
+        return result;      
     }
 
     public async Task<Product> CreateProductsAsync(CreateProductDto createProductsDto, CancellationToken cancellationToken)
@@ -85,9 +70,31 @@ public class ProductsRepository(DbContext dbContext) : IProductsRepository
 
     public async Task<IEnumerable<Product>> GetProductsAsync(CancellationToken cancellationToken)
     {
-        return await dbContext.Connection.QueryAsync<Product>(
+        var products = (await dbContext.Connection.QueryAsync<Product>(
             new CommandDefinition(
                 ProductsSqlQuery.QuerySelectProducts,
-                cancellationToken: cancellationToken));
+                cancellationToken: cancellationToken))).ToList();
+
+        var items = (await dbContext.Connection.QueryAsync<ProductItem>(
+             new CommandDefinition(
+                 ProductItemsSqlQuery.QuerySelectItems,
+                 cancellationToken: cancellationToken))).ToList();
+
+        var itemsByProductId = items.GroupBy(i => i.ProductId)
+                                .ToDictionary(g => g.Key, g => g.AsEnumerable());
+
+        foreach (var product in products)
+        {
+            if (itemsByProductId.TryGetValue(product.ProductId, out var productItems))
+            {
+                product.Items = productItems;
+            }
+            else
+            {
+                product.Items = Enumerable.Empty<ProductItem>();
+            }
+        }
+
+        return products;
     }
 }

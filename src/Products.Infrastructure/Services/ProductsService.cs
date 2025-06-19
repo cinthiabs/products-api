@@ -1,5 +1,6 @@
 ﻿using Ardalis.Result;
 using Products.Domain.Dtos;
+using Products.Domain.Entities;
 using Products.Domain.Interfaces.Base;
 using Products.Domain.Interfaces.Repositories;
 using Products.Domain.Interfaces.Services;

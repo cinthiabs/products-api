@@ -1,30 +1,31 @@
 ﻿using Products.Application.Products.Commands.CreateProducts;
 using Products.Application.Products.Queries.GetProducts;
 using Products.Domain.Dtos;
+using Products.Domain.Entities;
 
 namespace Products.Application.Extensions;
 
 public static class ProductsExtensions
 {
-    public static GetProductsViewModel ToGetProductsViewModel(ProductsDto productsDto)
+    public static GetAllProductsViewModel ToGetProductsViewModel(IEnumerable<Product> products)
     {
-        return new GetProductsViewModel
-        {
-            ProductId = productsDto.ProductId,
-            Name = productsDto.Name,
-            Description = productsDto.Description,
-            Price = productsDto.Price,
-            CreatedAt = productsDto.CreatedAt,
-            Items = productsDto.Items.Select(productsDto => new GetProductsItemModel
-            {
-                ItemId = productsDto.ProductId,
-                Quantity = productsDto.Quantity,
-                ProductId = productsDto.ProductId,
-                BatchNumber = productsDto.BatchNumber,
+        var productViewModels = products.Select(product => new GetProductsViewModel(
+            ProductId: product.ProductId,
+            Name: product.Name,
+            Description: product.Description,
+            Price: product.Price,
+            CreatedAt: product.CreatedAt,
+            Items: product.Items.Select(item => new GetProductsItemModel(
+                ItemId: item.ItemId,
+                ProductId: item.ProductId,
+                Quantity: item.Quantity,
+                BatchNumber: item.BatchNumber
+            ))
+        ));
 
-            })
-
-        };
+        return new GetAllProductsViewModel(
+            Products: productViewModels        
+        );
     }
 
     public static CreateProductDto ToCreateProductsDto(CreateProductsCommand createProductsCommand)

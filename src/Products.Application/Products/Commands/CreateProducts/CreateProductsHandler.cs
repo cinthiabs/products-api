@@ -2,7 +2,7 @@
 using FluentValidation;
 using MediatR;
 using Products.Application.Extensions;
-using Products.Domain.Interfaces.Repositories;
+using Products.Domain.Constants;
 using Products.Domain.Interfaces.Services;
 
 namespace Products.Application.Products.Commands.CreateProducts;
@@ -11,18 +11,25 @@ public class CreateProductsHandler(IValidator<CreateProductsCommand> validator, 
 {
     public async Task<Result> Handle(CreateProductsCommand command, CancellationToken cancellationToken)
     {
-        var validatorCommand =  validator.Validate(command);
-        
-        var result = ValidationResultExtensions.ToResult(validatorCommand);
-        if (!result.IsSuccess)
-           return Result.Invalid(result.ValidationErrors);
+        try
+        {
+            var validatorCommand = validator.Validate(command);
 
-        var createProductDto = ProductsExtensions.ToCreateProductsDto(command);
-        
-        var createProduct = await productsService.CreateProductsAsync(createProductDto, cancellationToken);
-        if(!createProduct.IsSuccess)
-            return Result.Error();
+            var result = ValidationResultExtensions.ToResult(validatorCommand);
+            if (!result.IsSuccess)
+                return Result.Invalid(result.ValidationErrors);
 
-        return Result.Success();
+            var createProductDto = ProductsExtensions.ToCreateProductsDto(command);
+
+            var createProduct = await productsService.CreateProductsAsync(createProductDto, cancellationToken);
+            if (!createProduct.IsSuccess)
+                return Result.Error(ErrorsNames.ERROR_CREATE_PRODUCT);
+
+            return Result.Success();
+        }
+        catch (Exception ex)
+        {
+            return Result.CriticalError(ErrorsNames.ERROR_CREATE_PRODUCT);
+        }
     }
 }

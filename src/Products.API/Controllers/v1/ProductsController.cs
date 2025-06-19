@@ -20,11 +20,11 @@ public class ProductsController : ApiController
     }
 
     [HttpGet]
-    public async Task<ActionResult<GetProductsViewModel>> GetProductsAynsc(
+    public async Task<ActionResult<GetAllProductsViewModel>> GetProductsAynsc(
         [FromServices] IMediator mediator,
         CancellationToken cancellationToken)
     {
-        var result = await mediator.Send(new GetProductsQuery(), cancellationToken);
+        var result = await mediator.Send(new GetAllProductsQuery(), cancellationToken);
         return ActionResult(result);
     }
 }

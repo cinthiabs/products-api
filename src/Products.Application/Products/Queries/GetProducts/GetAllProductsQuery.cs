@@ -3,4 +3,4 @@ using MediatR;
 
 namespace Products.Application.Products.Queries.GetProducts;
 
-public class GetProductsQuery: IRequest<Result<GetProductsViewModel>>;
+public class GetAllProductsQuery: IRequest<Result<GetAllProductsViewModel>>;
