@@ -1,4 +1,5 @@
 using Dapper;
+using Microsoft.Data.SqlClient;
 using Products.Domain.Dtos;
 using Products.Domain.Entities;
 using Products.Domain.Interfaces.Repositories;
@@ -21,21 +22,35 @@ public class ProductsRepository(DbContext dbContext) : IProductsRepository
             if (cancellationToken.IsCancellationRequested)
                 return new List<ProductItem>();
 
-            var table = itemsDto.Select(item => new Table_Item
-            {
-                ProductId = productId,
-                Quantity = item.Quantity,
-                BatchNumber = item.BatchNumber
-            }).ToList();
+            var result = new List<ProductItem>();
 
-            var insertedItems = await dbContext.Transaction.BulkInsertAsync(table, tableName: ProductItensSqlQuery.TableNameItem);
+            if (cancellationToken.IsCancellationRequested)
+                return result;
 
-            var result = insertedItems.Select(item => new ProductItem
+            var connection = (SqlConnection)dbContext.Connection;
+            var transaction = (SqlTransaction)dbContext.Transaction;
+
+            const string insertSql = @"
+        INSERT INTO ProductItem (ProductId, Quantity, BatchNumber)
+        VALUES (@ProductId, @Quantity, @BatchNumber);
+    ";
+
+            foreach (var item in itemsDto)
             {
-                ProductId = item.ProductId,
-                Quantity = item.Quantity,
-                BatchNumber = item.BatchNumber
-            }).ToList();
+                using var command = new SqlCommand(insertSql, connection, transaction);
+                command.Parameters.AddWithValue("@ProductId", productId);
+                command.Parameters.AddWithValue("@Quantity", item.Quantity);
+                command.Parameters.AddWithValue("@BatchNumber", item.BatchNumber ?? (object)DBNull.Value);
+
+                await command.ExecuteNonQueryAsync(cancellationToken);
+
+                result.Add(new ProductItem
+                {
+                    ProductId = productId,
+                    Quantity = item.Quantity,
+                    BatchNumber = item.BatchNumber
+                });
+            }
 
             return result;
         }
