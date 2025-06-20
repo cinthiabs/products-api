@@ -10,14 +10,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.AddSerilog();
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMediatRApi();
 builder.Services.AddSwaggerUi();
 builder.Services.AddSerilog();
 builder.Services.AddValidators();
-builder.Services.AddInfrastructure();
+builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly, includeInternalTypes: true);
 
@@ -32,7 +32,6 @@ builder.Services.AddApiVersioning(config =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
