@@ -3,6 +3,7 @@ CREATE TABLE Product (
     Name NVARCHAR(100) NOT NULL,
     Description NVARCHAR(255),
     Price DECIMAL(10,2) NOT NULL,
+    Active BIT NOT NULL DEFAULT 1,
     CreatedAt DATETIME DEFAULT GETDATE()
 );
 
@@ -12,5 +13,6 @@ CREATE TABLE Item (
     ProductId INT NOT NULL,
     Quantity INT NOT NULL,
     BatchNumber NVARCHAR(50),
+    Active BIT NOT NULL DEFAULT 1,
     FOREIGN KEY (ProductId) REFERENCES Product(ProductId)
 );

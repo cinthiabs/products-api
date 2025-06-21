@@ -10,6 +10,6 @@ internal static class ProductItemsSqlQuery
     ";
 
     internal const string QuerySelectItems = @"
-    SELECT * FROM  Item
+    SELECT * FROM  Item (NOLOCK) WHERE Active = 1
     ";
 }
