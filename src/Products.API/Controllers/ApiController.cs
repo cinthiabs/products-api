@@ -14,7 +14,7 @@ public abstract class ApiController : ControllerBase
 
         return result.Status switch
         {
-            ResultStatus.Ok => Ok(result.Value),
+            ResultStatus.Ok => result.Value is not null ? Ok(result.Value) : Ok(),
             ResultStatus.NotFound => NotFound(result.Errors),
             ResultStatus.Invalid => BadRequest(result.ValidationErrors),
             ResultStatus.Unauthorized => Unauthorized(result.Errors),

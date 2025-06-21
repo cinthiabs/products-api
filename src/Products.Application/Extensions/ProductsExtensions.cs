@@ -1,4 +1,5 @@
 ﻿using Products.Application.Products.Commands.CreateProducts;
+using Products.Application.Products.Queries.GetProductById;
 using Products.Application.Products.Queries.GetProducts;
 using Products.Domain.Dtos;
 using Products.Domain.Entities;
@@ -27,7 +28,23 @@ public static class ProductsExtensions
             Products: productViewModels        
         );
     }
-
+    public static GetProductByIdViewModel ToGetProductByIdViewModel(Product product, IEnumerable<ProductItem> items)
+    {
+        return new GetProductByIdViewModel
+        {
+            ProductId = product.ProductId,
+            Name = product.Name,
+            Description = product.Description,
+            Price = product.Price,
+            CreatedAt = product.CreatedAt,
+            Items = items.Select(item => new GetProductItemByIdViewModel
+            {
+                ItemId = item.ItemId,
+                Quantity = item.Quantity,
+                BatchNumber = item.BatchNumber
+            }).ToList()
+        };
+    }
     public static CreateProductDto ToCreateProductsDto(CreateProductsCommand createProductsCommand)
     {
         return new CreateProductDto

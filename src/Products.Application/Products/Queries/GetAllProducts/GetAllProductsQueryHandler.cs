@@ -19,7 +19,7 @@ public class GetAllProductsQueryHandler(ILogger<GetAllProductsQueryHandler> logg
         catch (Exception ex)
         {
             logger.LogError(ex, Logs.LOG_ERROR, ProcessNames.PROCESS_GET_PRODUCTS, ErrorsNames.ERROR_GET_PRODUCTS, ex.Message);
-            return Result.CriticalError(ProcessNames.PROCESS_GET_PRODUCTS);
+            return Result.CriticalError(ErrorsNames.ERROR_GET_PRODUCTS);
         }
     }
 }

@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Products.Application.Products.Commands.CreateProducts;
 using Products.Application.Products.Commands.RemoveProducts;
+using Products.Application.Products.Queries.GetProductById;
 using Products.Application.Products.Queries.GetProducts;
 
 namespace Products.API.Controllers.v1;
@@ -36,6 +37,19 @@ public class ProductsController : ApiController
         return ActionResult(result);
     }
 
+    [HttpGet("{Id}")]
+    [ProducesResponseType(typeof(GetProductItemByIdViewModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationError), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<GetProductItemByIdViewModel>> GetProductByIdAynsc(
+     [FromServices] IMediator mediator,
+     [FromRoute] GetProductByIdQuery query,
+     CancellationToken cancellationToken)
+    {
+        var result = await mediator.Send(query, cancellationToken);
+        return ActionResult(result);
+    }
+
     [HttpDelete("{Id}")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationError), StatusCodes.Status400BadRequest)]
@@ -48,5 +62,4 @@ public class ProductsController : ApiController
         var result = await mediator.Send(command, cancellationToken);
         return ActionResult(result);
     }
-
 }

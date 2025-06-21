@@ -5,6 +5,7 @@ public static class ProcessNames
     public const string PROCESS_CREATE_PRODUCT = nameof(PROCESS_CREATE_PRODUCT);
     public const string PROCESS_GET_PRODUCTS = nameof(PROCESS_GET_PRODUCTS);
     public const string PROCESS_REMOVE_PRODUCT = nameof(PROCESS_REMOVE_PRODUCT);
+    public const string PROCESS_GET_PRODUCT_BY_ID = nameof(PROCESS_GET_PRODUCT_BY_ID);
 }
 
 public static class ErrorsNames
