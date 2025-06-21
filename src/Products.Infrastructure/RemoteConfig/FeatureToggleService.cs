@@ -4,10 +4,10 @@ namespace Products.Infrastructure.RemoteConfig;
 
 public class FeatureToggleService(IConfigCatRemoteConfig configCat) : IFeatureToggleService
 {
-    private const string FLAG_DELETE_OR_DISABLE  = "flag_delete_or_disable_product";
+    private const string FLAG_DELETE_PRODUCT  = "flag_delete_product";
     
-    public async Task<bool> GetRuleDeleteOrDisableProduct(CancellationToken cancellationToken)
+    public async Task<bool> GetRuleDeleteProduct(CancellationToken cancellationToken)
     {
-        return await configCat.GetValueAsync(FLAG_DELETE_OR_DISABLE, false, cancellationToken);
+        return await configCat.GetValueAsync(FLAG_DELETE_PRODUCT, false, cancellationToken);
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Ardalis.Result;
 using Products.Domain.Dtos;
-using Products.Domain.Entities;
 using Products.Domain.Interfaces.Base;
 using Products.Domain.Interfaces.Repositories;
 using Products.Domain.Interfaces.Services;
@@ -29,4 +28,20 @@ public class ProductsService(IUnitOfWork unitOfWork, IProductsRepository product
             return Result.Error(ex.Message);
         }
     }
+
+    public async Task<Result<bool>> RemoveProductsAsync(int productId, bool remove, CancellationToken cancellationToken)
+    {
+        var product = await productsRepository.GetProductByIdAsync(productId, cancellationToken);
+        if (product == null)
+            return Result.Invalid();
+
+        var success = remove
+            ? await productsRepository.RemoveProductsAsync(productId, cancellationToken)
+            : await productsRepository.InactiveProductsAsync(productId, cancellationToken);
+
+        return success
+            ? Result.Success(true)
+            : Result.Error();
+    }
+
 }

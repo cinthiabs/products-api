@@ -2,5 +2,5 @@
 
 public interface IFeatureToggleService
 {
-    Task<bool> GetRuleDeleteOrDisableProduct(CancellationToken cancellationToken);
+    Task<bool> GetRuleDeleteProduct(CancellationToken cancellationToken);
 }

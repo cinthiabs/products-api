@@ -68,6 +68,28 @@ public class ProductsRepository(DbContext dbContext) : IProductsRepository
         };
     }
 
+    public async Task<Product> GetProductByIdAsync(int id, CancellationToken cancellationToken)
+    {
+        var query = ProductsSqlQuery.QuerySelectProducts + ProductsSqlQuery.QuerySelectProductsById;
+
+        return  await dbContext.Connection.QueryFirstOrDefaultAsync<Product>(
+            new CommandDefinition(
+                query,
+                new { Id = id },         
+                cancellationToken: cancellationToken));   
+    }
+
+    public async Task<IEnumerable<ProductItem>> GetProductItemsByIdAsync(int productId, CancellationToken cancellationToken)
+    {
+        var query = ProductItemsSqlQuery.QuerySelectItems + ProductItemsSqlQuery.QuerySelectItemsById;
+
+        return (await dbContext.Connection.QueryAsync<ProductItem>(
+          new CommandDefinition(
+              query,
+              new { ProductId = productId },
+              cancellationToken: cancellationToken))).ToList();
+    }
+
     public async Task<IEnumerable<Product>> GetProductsAsync(CancellationToken cancellationToken)
     {
         var products = (await dbContext.Connection.QueryAsync<Product>(
@@ -96,5 +118,25 @@ public class ProductsRepository(DbContext dbContext) : IProductsRepository
         }
 
         return products;
+    }
+
+    public async Task<bool> InactiveProductsAsync(int productId, CancellationToken cancellationToken)
+    {
+        var rowsAffected = await dbContext.Connection.ExecuteAsync(
+            new CommandDefinition(ProductsSqlQuery.QueryUpdateProductsAndItem, 
+            new { ProductId = productId }, 
+            cancellationToken: cancellationToken));
+
+        return rowsAffected > 0;
+    }
+
+    public async Task<bool> RemoveProductsAsync(int productId, CancellationToken cancellationToken)
+    {
+        var rowsAffected = await dbContext.Connection.ExecuteAsync(
+           new CommandDefinition(ProductsSqlQuery.QueryDeleteProductsAndItem,
+           new { ProductId = productId },
+           cancellationToken: cancellationToken));
+
+        return rowsAffected > 0;
     }
 }
