@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Products.API.Controllers.v1;
 using Products.Application.Products.Queries.GetProducts;
+using Products.Domain.Constants;
 
 namespace Products.Tests.Controller;
 
@@ -33,4 +34,18 @@ public class ProductsControllerTests
         Assert.IsType<GetAllProductsViewModel>(okResult.Value);
     }
 
+    [Fact]
+    public async Task GetProductsAsync_ReturnsBadRequest_WhenFailure()
+    {
+        // Arrange
+        _mediatorMock.Setup(m => m.Send(It.IsAny<GetAllProductsQuery>(), It.IsAny<CancellationToken>()))
+                     .ReturnsAsync(Result.Error(ErrorsNames.ERROR_GET_PRODUCTS));
+
+        // Act
+        var result = await _controller.GetProductsAynsc(_mediatorMock.Object, CancellationToken.None);
+
+        // Assert
+        var objectResult = Assert.IsType<ObjectResult>(result.Result);
+        Assert.Equal(500, objectResult.StatusCode);
+    }
 }
