@@ -29,15 +29,15 @@ public class ProductsService(IUnitOfWork unitOfWork, IProductsRepository product
         }
     }
 
-    public async Task<Result<bool>> RemoveProductsAsync(int productId, bool remove, CancellationToken cancellationToken)
+    public async Task<Result<bool>> RemoveProductsAsync(int idProduct, bool remove, CancellationToken cancellationToken)
     {
-        var product = await productsRepository.GetProductByIdAsync(productId, cancellationToken);
+        var product = await productsRepository.GetProductByIdAsync(idProduct, cancellationToken);
         if (product == null)
             return Result.Invalid();
 
         var success = remove
-            ? await productsRepository.RemoveProductsAsync(productId, cancellationToken)
-            : await productsRepository.InactiveProductsAsync(productId, cancellationToken);
+            ? await productsRepository.RemoveProductsAsync(idProduct, cancellationToken)
+            : await productsRepository.InactiveProductsAsync(idProduct, cancellationToken);
 
         return success
             ? Result.Success(true)
