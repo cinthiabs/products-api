@@ -28,7 +28,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "DefaultConnection": "Data Source=DESKTOP-GN1BCUS;Initial Catalog=ProductCatalogDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;",
         "CONFIGCAT_TIME_CACHE": "1",
-        "CONFIGCAT_CLIENT_TOKEN": "configcat-sdk-1/ga_dCGpIcU-AWK53dPHJVw/rSuxwjXWrE6G-EkYgw7X4w"
+        "CONFIGCAT_CLIENT_TOKEN": "{CONFIGCAT_CLIENT_TOKEN}"
       }
     },
     "Container (Dockerfile)": {
